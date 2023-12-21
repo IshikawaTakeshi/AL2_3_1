@@ -3,10 +3,10 @@
 class Light : public Object{
 public:
 
-	Light(Vector2 pos, BlendMode blendMode, int red, int green, int blue, int alpha);
-	unsigned int GetColor(int red, int green, int blue, int alpha) override;
+	Light(Vector2 pos, BlendMode blendMode,Color color);
+	unsigned int GetColor(Color color) override;
 	virtual void Update(char* keys);
-	void Draw(BlendMode blendMode, unsigned int color) override;
+	void Draw() override;
 
 };
 

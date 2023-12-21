@@ -1,55 +1,73 @@
 ﻿#include "Player.h"
 
-Player::Player(int posX , int posY, BlendMode blendMode, int red, int green, int blue, int alpha){
+/*-----------コンストラクタ---------------*/
+Player::Player(int posX, int posY, BlendMode blendMode, Color color) {
 	mouseX_ = posX;
 	mouseY_ = posY;
-	pos_.x = mouseX_;
-	pos_.y = mouseY_;
-
-	blendMode_ = blendMode;
-	red_ = red;
-	green_ = green;
-	blue_ = blue;
-	alpha_ = alpha;
+	blendMode = blendMode;
+	color_ = color;
+	gh = Novice::LoadTexture("./Resources/particle.png");
 }
 
+/*------マウスの座標を初期化させる関数-------------*/
 void Player::SetMousePos(int x, int y) {
-	mouseX_ = x;
-	mouseY_ = y;
+	pos_.x = (float)x;
+	pos_.y = (float)y;
 }
 
-unsigned int Player::GetColor(int red, int green, int blue, int alpha){
+/*----------------カラーを取得する関数-------------*/
+unsigned int Player::GetColor(Color color) {
 	unsigned int result;
-	red <<= 24;
-	green <<= 16;
-	blue <<= 8;
-	result = (red | green | blue | alpha);
+	color.red <<= 24;
+	color.green <<= 16;
+	color.blue <<= 8;
+	result = (color.red | color.green | color.blue | color.alpha);
 
 	return result;
 }
 
+/*------------------更新処理-----------------*/
 void Player::Update(char* keys) {
+	//ブレンドモード変更
 	if (keys[DIK_1]) {
-		blendMode_ = kBlendModeNormal;
+		blendMode = kBlendModeNormal;
 	}
 	if (keys[DIK_2]) {
-		blendMode_ = kBlendModeAdd;
+		blendMode = kBlendModeAdd;
 	}
 	if (keys[DIK_3]) {
-		blendMode_ = kBlendModeSubtract;
+		blendMode = kBlendModeSubtract;
 	}
 	if (keys[DIK_4]) {
-		blendMode_ = kBlendModeNone;
+		blendMode = kBlendModeNone;
+	}
+
+	//透明度変更
+	if (keys[DIK_RIGHT]) {
+		color_.alpha += 0x01;
+		if (color_.alpha >= 255) {
+			color_.alpha = 255;
+		}
+	}
+	if (keys[DIK_LEFT]) {
+		color_.alpha -= 0x01;
+		if (color_.alpha <= 0) {
+			color_.alpha = 0;
+		}
 	}
 }
 
-void Player::Draw(BlendMode blendMode, unsigned int color){
+/*-----------------------描画処理----------------------*/
+void Player::Draw() {
 	Novice::SetBlendMode(blendMode);
 	Novice::DrawSprite(
-		static_cast<int>(pos_.x),
-		static_cast<int>(pos_.y),
-		gh_,
+		static_cast<int>(pos_.x - 300),
+		static_cast<int>(pos_.y - 300),
+		gh,
 		1, 1, 0.0f,
-		color
+		GetColor(color_)
 	);
+
+	//デバッグ用文字列
+	Novice::ScreenPrintf(10, 100, "RIGHT/LEFT:change alpha:%d", color_.alpha);
 }

@@ -1,46 +1,64 @@
-#include "light.h"
+﻿#include "light.h"
+#include "Novice.h"
 
-Light::Light(Vector2 pos, BlendMode blendMode, int red, int green, int blue, int alpha){
+/*-----------コンストラクタ---------------*/
+Light::Light(Vector2 pos, BlendMode blendMode, Color color) {
 	pos_ = pos;
-	blendMode_ = blendMode;
-	red_ = red;
-	green_ = green;
-	blue_ = blue;
-	alpha_ = alpha;
+	blendMode = blendMode;
+	color_ = color;
+	gh = Novice::LoadTexture("./Resources/particle.png");
 }
 
-unsigned int Light::GetColor(int red, int green, int blue, int alpha) {
+/*------------------------カラーを取得する関数---------------------*/
+unsigned int Light::GetColor(Color color) {
 	unsigned int result;
-	red <<= 24;
-	green <<= 16;
-	blue <<= 8;
-	result = (red | green | blue | alpha);
+	color.red <<= 24;
+	color.green <<= 16;
+	color.blue <<= 8;
+	result = (color.red | color.green | color.blue | color.alpha);
 
 	return result;
 }
 
+/*-----------------------更新処理----------------------*/
 void Light::Update(char* keys) {
+	//ブレンドモード変更
 	if (keys[DIK_1]) {
-		blendMode_ = kBlendModeNormal;
+		blendMode = kBlendModeNormal;
 	}
 	if (keys[DIK_2]) {
-		blendMode_ = kBlendModeAdd;
+		blendMode = kBlendModeAdd;
 	}
 	if (keys[DIK_3]) {
-		blendMode_ = kBlendModeSubtract;
+		blendMode = kBlendModeSubtract;
 	}
 	if (keys[DIK_4]) {
-		blendMode_ = kBlendModeNone;
+		blendMode = kBlendModeNone;
+	}
+
+	//透明度変更
+	if (keys[DIK_RIGHT]) {
+		color_.alpha += 0x01;
+		if (color_.alpha >= 255) {
+			color_.alpha = 255;
+		}
+	}
+	if (keys[DIK_LEFT]) {
+		color_.alpha -= 0x01;
+		if (color_.alpha <= 0) {
+			color_.alpha = 0;
+		}
 	}
 }
 
-void Light::Draw(BlendMode blendMode, unsigned int color) {
+/*-----------------------描画処理----------------------*/
+void Light::Draw() {
 	Novice::SetBlendMode(blendMode);
 	Novice::DrawSprite(
-		static_cast<int>(pos_.x),
-		static_cast<int>(pos_.y),
-		gh_,
+		static_cast<int>(pos_.x - 300),
+		static_cast<int>(pos_.y - 300),
+		gh,
 		1, 1, 0.0f,
-		color
+		GetColor(color_)
 	);
 }

@@ -4,19 +4,22 @@
 class Object{
 public:
 
-	virtual unsigned int GetColor(int red, int green, int blue, int alpha);
+	struct Color {
+		int red;
+		int green;
+		int blue;
+		int alpha;
+	};
+	
+	int gh;
+	BlendMode blendMode = kBlendModeNormal;
+
+	virtual unsigned int GetColor(Color color);
 	virtual void Update(char *keys);
-	virtual void Draw(BlendMode blendMode, unsigned int color);
+	virtual void Draw();
 
 protected:
 	Vector2 pos_;
-	BlendMode blendMode_;
-
-	int red_;
-	int green_;
-	int blue_;
-	int alpha_;
-
-	int gh_;
+	Color color_;
 };
 
