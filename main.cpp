@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Light.h"
 
-const char kWindowTitle[] = "LC1B_02_イシカワタケシ_AL";
+const char kWindowTitle[] = "LC1B_02_イシカワタケシ_AL2_3_1_確認課題";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
